@@ -1,0 +1,7 @@
+fastapi[all]
+tortoise-orm
+uvicorn
+pyjwt
+passlib[bcrypt]
+python-multipart
+bcrypt
