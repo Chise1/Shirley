@@ -11,13 +11,16 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt import PyJWTError
+from .models import User, Permission
 from .settings import SECRET_KEY, ALGORITHM
 from .tools import get_user
+from typing import Callable, List
+from .err import PermissionError
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     """
     根据token获取用户
     :param token:
@@ -40,3 +43,72 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     if user is None:
         raise credentials_exception
     return user
+
+
+async def super_user(user: User = Depends(get_current_user)) -> User:
+    """
+    超级管理员权限依赖
+    :param user:
+    :return:
+    """
+    if not user.is_superuser:
+        raise PermissionError()
+    else:
+        return user
+
+
+async def staff_user(user: User = Depends(get_current_user)) -> User:
+    """
+    职员权限依赖
+    :param user:
+    :return:
+    """
+    if user.is_superuser or user.is_staff:
+        raise PermissionError()
+    else:
+        return user
+
+
+def check_permission(permission_code: str) -> Callable:
+    """
+    确认是否有权限
+    :param permission_code:
+    :return:
+    """
+
+    async def has_permission(user: User = Depends(get_current_user)) -> User:
+        """
+        返回的依赖
+        :param user:
+        :return:
+        """
+        if user.is_superuser:
+            return user
+        if await user.permissions.filter(code=permission_code):  # 这里需要测试一下
+            return user
+        raise PermissionError()
+
+    return has_permission
+
+
+async def check_permissions(permission_codes: List[str]) -> Callable:
+    """
+    确认是否有权限组
+    :param permission_code:
+    :return:
+    """
+
+    async def has_permission(user: User = Depends(get_current_user)) -> User:
+        """
+        返回的依赖
+        :param user:
+        :return:
+        """
+        if user.is_superuser:
+            return user
+        permissions = await user.permissions.all()  # 这里需要测试一下
+        for permission in permissions:
+            if not permission_codes.count(permission.code):
+                raise PermissionError()
+
+    return has_permission

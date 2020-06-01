@@ -7,10 +7,15 @@
 @Software: PyCharm
 @info    :
 """
-from fastapi import APIRouter,Depends,HTTPException,status
-from .schemas import Token,OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from .models import User, Permission
+from .schemas import Token, OAuth2PasswordRequestForm
 from .tools import authenticate_user
-router=APIRouter()
+from .depends import get_current_user, check_permission
+
+router = APIRouter()
+
 
 @router.post("/login", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -28,3 +33,15 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         )
     access_token = user.create_access_token()
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.get('/api/user', tags=['admin'])
+async def user_list(user: User = Depends(check_permission("can read User"))):
+    return {"code": 200}
+
+
+@router.post('/api/user/permission', tags=['admin'])
+async def create_permission(permission_code: str, user: User = Depends(get_current_user)):
+    permission = await Permission.get(code=permission_code)
+    await user.permissions.add(permission)
+    return {"code": 200}
