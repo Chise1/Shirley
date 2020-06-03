@@ -7,7 +7,7 @@
 @Software: PyCharm
 @info    :
 """
-from typing import List, Optional, Dict
+from typing import List, Optional
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
 from .tools import init
@@ -28,6 +28,7 @@ def register(app: FastAPI, db_url: str, modules: Optional[List[str]] = None, gen
     # 先检查权限字段是否被添加，如果没有被添加则自动添加，然后再注册app
     if not modules:
         modules = []
+    print("??",['Shirley.models'] + modules)
     all_modules = {"models": ['Shirley.models'] + modules}
     init(db_url,all_modules)
     register_tortoise(  # 这里是启动app的，之后会考虑和使用uvicorn启动的性能差别

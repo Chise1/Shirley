@@ -14,7 +14,7 @@ from jwt import PyJWTError
 from .models import User, Permission
 from .settings import SECRET_KEY, ALGORITHM
 from .tools import get_user
-from typing import Callable, List
+from typing import Callable, List, Optional
 from .err import PermissionError
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
@@ -42,6 +42,26 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     user = await get_user(username)
     if user is None:
         raise credentials_exception
+    return user
+
+
+async def get_any_user(token: Optional[str] = Depends(oauth2_scheme)) -> Optional[User]:
+    """
+    根据token获取用户，如果没有则返回None
+    :param token:
+    :return:
+    """
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise None
+    except PyJWTError:
+        raise None
+    user = await get_user(username)
+    if user is None:
+        raise None
     return user
 
 

@@ -8,7 +8,6 @@
 @info    :
 """
 from fastapi import APIRouter, Depends, HTTPException, status
-
 from .models import User, Permission
 from .schemas import Token, OAuth2PasswordRequestForm
 from .tools import authenticate_user

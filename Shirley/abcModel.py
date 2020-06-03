@@ -7,13 +7,21 @@
 @Software: PyCharm
 @info    :数据库和相关的抽象组件
 """
-
+from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise.models import Model
 from tortoise import fields
 
 
 class abcModel(Model):
     id = fields.IntField(pk=True)
+
+    @classmethod
+    def get_schema(cls):
+        schema = cls.__class__.__name__ + "Schema"
+        if not hasattr(cls, schema):
+            setattr(cls, schema, pydantic_model_creator(cls, name=schema))
+        else:
+            return getattr(cls, schema)
 
     class Meta:
         abstract = True

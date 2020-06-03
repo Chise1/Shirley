@@ -7,3 +7,25 @@
 @Software: PyCharm
 @info    :
 """
+from setuptools import setup, find_packages
+
+setup(
+    name="Shirley",
+    version="0.1",
+    description="基于fastapi的web框架",
+    author="Chise",
+    author_email="chise123@live.com",
+    packages=find_packages(),
+    include_package_data=True,
+    platforms="any",
+    python_requires=">=3.6",  # Python版本依赖
+    install_requires=[
+        'fastapi[all]',
+        'tortoise-orm',
+        'uvicorn',
+        'pyjwt',
+        'passlib[bcrypt]',
+        'python-multipart',
+        'bcrypt',
+    ],  # 第三方库依赖
+)

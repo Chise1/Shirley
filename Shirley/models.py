@@ -9,6 +9,7 @@
 """
 from typing import Optional, List, Dict
 from datetime import datetime, timedelta
+from tortoise.contrib.pydantic import pydantic_model_creator
 from .abcModel import abcModel
 from tortoise import fields, BaseDBAsyncClient
 from .settings import SECRET_KEY, ALGORITHM
@@ -25,8 +26,8 @@ class Permission(abcModel):
     model = fields.CharField(max_length=64, description="对应model", null=True)
     created_time = fields.DatetimeField(auto_now_add=True, description="创建时间")
     update_time = fields.DatetimeField(auto_now=True, description="更新时间")
-    users: fields.ManyToManyRelation['Shirley.models.User']
-    groups: fields.ManyToManyRelation['Shirley.models.Group']
+    users: fields.ManyToManyRelation['User']
+    groups: fields.ManyToManyRelation['Group']
 
 
 class User(abcModel):
@@ -40,7 +41,9 @@ class User(abcModel):
     update_time = fields.DatetimeField(auto_now=True, description="更新时间")
     permissions: fields.ManyToManyRelation[Permission] = fields.ManyToManyField("models.Permission",
                                                                                 related_name="users")
-    groups: fields.ManyToManyRelation['Shirley.models.Group']
+    groups: fields.ManyToManyRelation['Group']
+
+
 
     @classmethod
     def hash_password(cls, password: str) -> str:
@@ -109,7 +112,7 @@ class User(abcModel):
 class Group(abcModel):
     name = fields.CharField(max_length=32, description="组名")
     description = fields.CharField(max_length=255, description="组描述")
-    users: fields.ManyToManyRelation['Shirley.models.User'] = fields.ManyToManyField('models.User',
+    users: fields.ManyToManyRelation['User'] = fields.ManyToManyField('models.User',
                                                                                      related_name="groups")
     permissions: fields.ManyToManyRelation[Permission] = fields.ManyToManyField('models.Permission',
                                                                                 related_name="groups")
