@@ -6,8 +6,10 @@ make html
 
 - 代码上传到pypi的方法：
 ```shell script
+# 打包
+python setup.py sdist
 # 注册包
-twine register dist/smart.whl
+twine register dist/*
 # 上传包
 twine upload dist/*
 ```

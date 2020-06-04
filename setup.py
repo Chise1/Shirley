@@ -11,16 +11,16 @@ from setuptools import setup, find_packages
 
 setup(
     name="Shirley",
-    version="0.1",
+    version="0.2",
     description="基于fastapi的web框架",
     author="Chise",
     author_email="chise123@live.com",
     packages=find_packages(),
     include_package_data=True,
     platforms="any",
-    python_requires=">=3.6",  # Python版本依赖
+    python_requires=">=3.7",  # Python版本依赖
     install_requires=[
-        'fastapi[all]',
+        'fastapi',
         'tortoise-orm',
         'uvicorn',
         'pyjwt',
@@ -28,4 +28,5 @@ setup(
         'python-multipart',
         'bcrypt',
     ],  # 第三方库依赖
+    url="https://shirley.readthedocs.io/en/latest/"
 )
