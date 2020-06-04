@@ -11,18 +11,14 @@
 # 这是一个测试Shirley的工具
 import uvicorn
 from fastapi import FastAPI, Depends
+
 db_url = "sqlite://db.sqlite3"
 from Chau import register
-
-app = FastAPI(debug=True, title="这是一个框架测试包")
-register(app=app, db_url=db_url, modules=["models",'model_test.models'])
-
 from Shirley import router
-
-app.include_router(router, tags=['admin'])
-
 from Shirley.models import User
 from Shirley.depends import get_current_user
+
+app = FastAPI(debug=True, title="这是一个框架测试包")
 
 
 @app.get("/users/me/", )
@@ -59,8 +55,9 @@ async def test():
     return {"code": 200}
 
 
-
 def test_Shirley():
     # schema=User.get_schema()
-    x = TestForm(app)
-    x.register()
+    # x = TestForm(app)
+    # x.register()
+    register(app=app, db_url=db_url, modules=["models", 'model_test.models'])
+    app.include_router(router, tags=['admin'])
