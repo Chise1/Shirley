@@ -9,12 +9,10 @@
 """
 
 # 这是一个测试Shirley的工具
-import uvicorn
 from fastapi import FastAPI, Depends
 
 db_url = "sqlite://db.sqlite3"
 from Chau import register
-from Shirley import router
 from Shirley.models import User
 from Shirley.depends import get_current_user
 
@@ -60,4 +58,3 @@ def test_Shirley():
     # x = TestForm(app)
     # x.register()
     register(app=app, db_url=db_url, modules=["models", 'model_test.models'])
-    app.include_router(router, tags=['admin'])

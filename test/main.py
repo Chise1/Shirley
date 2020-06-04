@@ -12,6 +12,7 @@ import uvicorn
 from fastapi import FastAPI, Depends
 db_url = "sqlite://db.sqlite3"
 from Chau import register
+from Shirley.schemas import OAuth2PasswordRequestForm
 
 app = FastAPI(debug=True, title="这是一个框架测试包")
 register(app=app, db_url=db_url, modules=["models",'model_test.models'])
@@ -34,7 +35,6 @@ async def read_own_items(current_user: User = Depends(get_current_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 
-from Shirley.schemas import OAuth2PasswordRequestForm
 
 
 @app.post("/user")

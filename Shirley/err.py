@@ -8,7 +8,6 @@
 @info    :一些报错方法
 """
 from typing import Dict, Optional
-
 from fastapi import HTTPException, status
 
 
