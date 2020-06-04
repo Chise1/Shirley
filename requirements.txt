@@ -5,3 +5,4 @@ pyjwt
 passlib[bcrypt]
 python-multipart
 bcrypt
+pytest
