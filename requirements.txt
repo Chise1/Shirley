@@ -1,4 +1,4 @@
-fastapi[all]
+fastapi
 tortoise-orm
 uvicorn
 pyjwt
