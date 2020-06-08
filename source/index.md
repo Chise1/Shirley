@@ -4,6 +4,7 @@
 目标：
 - User、Group、Permission创建 √
 - 权限管理 √
+- 配置setting模块
 - model自定义权限 
 - 分页依赖
 - 根据model的简单crud自动生成

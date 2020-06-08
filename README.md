@@ -7,7 +7,8 @@
 一个基于fastapi的裸后端，主要是为了实现与django相似的功能。orm基于tortoise-orm。
 
 ### 支持版本
-python3.7 python3.8
+python3.7 
+python3.8
 ### 安装
 ```shell script
 pip install Shirley
