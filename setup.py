@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="Shirley",
-    version="0.2",
+    version="0.3.0",
     description="基于fastapi的web框架",
     author="Chise",
     author_email="chise123@live.com",
@@ -27,6 +27,7 @@ setup(
         'passlib[bcrypt]',
         'python-multipart',
         'bcrypt',
+        'python-dotenv'
     ],  # 第三方库依赖
     url="https://shirley.readthedocs.io/en/latest/"
 )

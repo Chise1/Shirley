@@ -18,9 +18,8 @@ from Chau import register
 from Shirley.schemas import Token, OAuth2PasswordRequestForm
 from Shirley.tools import authenticate_user
 
-db_url = "sqlite://db.sqlite3"
 app = FastAPI(debug=True, title="这是一个框架测试包")
-register(app=app, db_url=db_url, modules=["models", 'model_test.models'])
+register(app=app,  modules=["models", 'model_test.models'])
 
 from Shirley.models import User
 from Shirley.depends import get_current_user, get_any_user

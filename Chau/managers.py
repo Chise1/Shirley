@@ -32,20 +32,20 @@ async def delete_superuser(user_id):
     res = await user.delete()  # 注意，这里的删除用了两次，这是不合适的，在未来tortoise更新之后记得修改
     return {"message": res}
 
-
-permission_schema = pydantic_model_creator(Permission)
-
-@manager.post('/user/permission',summary="给用户增加权限",)
-async def user_add_permission(permission_code:str):
-    pass
-
-@manager.post('/permission', summary="增加自定义权限", response_model=permission_schema)
-async def add_permission(permission: permission_schema):
-    """
-    创建自定义的权限，在之后可以用来进行判定
-    :param permission:
-    :return:
-    """
-    res = await Permission.create(**permission.dict(exclude={'id', }))
-    permission.id = res
-    return permission
+#
+# permission_schema = pydantic_model_creator(Permission)
+#
+# @manager.post('/user/permission',summary="给用户增加权限",)
+# async def user_add_permission(permission_code:str):
+#     pass
+#
+# @manager.post('/permission', summary="增加自定义权限", response_model=permission_schema)
+# async def add_permission(permission: permission_schema):
+#     """
+#     创建自定义的权限，在之后可以用来进行判定
+#     :param permission:
+#     :return:
+#     """
+#     res = await Permission.create(**permission.dict(exclude={'id', }))
+#     permission.id = res
+#     return permission

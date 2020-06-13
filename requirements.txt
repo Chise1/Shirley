@@ -6,3 +6,4 @@ passlib[bcrypt]
 python-multipart
 bcrypt
 pytest
+python-dotenv

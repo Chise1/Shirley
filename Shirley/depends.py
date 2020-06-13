@@ -12,13 +12,12 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt import PyJWTError
 from .models import User
-from .settings import SECRET_KEY, ALGORITHM
+from .config import settings
 from .tools import get_user
 from typing import Callable, Optional, Tuple
 from .err import PermissionError
-from Chau.configs import login_url
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=login_url+"/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.LOGIN_URL+"/login")
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
@@ -33,7 +32,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -53,7 +52,7 @@ async def get_any_user(token: Optional[str] = Depends(oauth2_scheme)) -> Optiona
     :return:
     """
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token,settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise None

@@ -11,7 +11,7 @@ from typing import Optional, List, Dict
 from datetime import datetime, timedelta
 from .abcModel import abcModel
 from tortoise import fields, BaseDBAsyncClient
-from .settings import SECRET_KEY, ALGORITHM
+from . import config
 import jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
@@ -85,7 +85,7 @@ class User(abcModel):
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        encoded_jwt = jwt.encode(to_encode, config.settings.SECRET_KEY, algorithm=config.settings.ALGORITHM)
         return encoded_jwt
 
     async def save(

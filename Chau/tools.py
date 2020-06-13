@@ -8,7 +8,6 @@
 @info    :
 """
 import asyncio
-
 from tortoise import Tortoise
 from Shirley.models import Permission
 from tortoise.exceptions import DoesNotExist

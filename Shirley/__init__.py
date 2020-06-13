@@ -7,5 +7,4 @@
 @Software: PyCharm
 @info    :
 """
-# from .models import
 from .views import router

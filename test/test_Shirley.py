@@ -10,7 +10,7 @@
 
 # 这是一个测试Shirley的工具
 from fastapi import FastAPI, Depends
-
+from fastapi.testclient import TestClient
 db_url = "sqlite://db.sqlite3"
 from Chau import register
 from Shirley.models import User
@@ -66,4 +66,5 @@ def test_Shirley():
     # schema=User.get_schema()
     # x = TestForm(app)
     # x.register()
-    register(app=app, db_url=db_url, modules=["models", 'model_test.models'])
+    with TestClient(app) as client:
+        register(app=app,  modules=["models", 'model_test.models'])
