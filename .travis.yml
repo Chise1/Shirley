@@ -7,4 +7,4 @@ install:
 script:
   - pytest
 env:
-  - "SECRET_KEY=fjwyy#qht#nvoy%h4&m6hvbs-9s&##sh4710*f(ir(019!r3)c"
+  - SECRET_KEY=fjwyy#qht#nvoy%h4&m6hvbs-9s&##sh4710*f(ir(019!r3)c
