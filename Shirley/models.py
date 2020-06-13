@@ -9,7 +9,6 @@
 """
 from typing import Optional, List, Dict
 from datetime import datetime, timedelta
-from tortoise.contrib.pydantic import pydantic_model_creator
 from .abcModel import abcModel
 from tortoise import fields, BaseDBAsyncClient
 from .settings import SECRET_KEY, ALGORITHM
@@ -31,7 +30,7 @@ class Permission(abcModel):
 
 
 class User(abcModel):
-    username = fields.CharField(max_length=32, description="用户名")
+    username = fields.CharField(max_length=32, description="用户名", unique=True)
     password = fields.CharField(max_length=32, description="密码")  # 用户密码拼接key之后MD5多重加密
     email = fields.CharField(max_length=32, description="邮箱", null=True)
     is_staff = fields.BooleanField(default=False, description="是否为职员")
@@ -42,8 +41,6 @@ class User(abcModel):
     permissions: fields.ManyToManyRelation[Permission] = fields.ManyToManyField("models.Permission",
                                                                                 related_name="users")
     groups: fields.ManyToManyRelation['Group']
-
-
 
     @classmethod
     def hash_password(cls, password: str) -> str:
@@ -112,8 +109,7 @@ class User(abcModel):
 class Group(abcModel):
     name = fields.CharField(max_length=32, description="组名")
     description = fields.CharField(max_length=255, description="组描述")
-    users: fields.ManyToManyRelation['User'] = fields.ManyToManyField('models.User',
-                                                                                     related_name="groups")
+    users: fields.ManyToManyRelation['User'] = fields.ManyToManyField('models.User', related_name="groups")
     permissions: fields.ManyToManyRelation[Permission] = fields.ManyToManyField('models.Permission',
                                                                                 related_name="groups")
     created_time = fields.DatetimeField(auto_now_add=True, description="创建时间")

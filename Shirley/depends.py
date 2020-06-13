@@ -11,13 +11,14 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt import PyJWTError
-from .models import User, Permission
+from .models import User
 from .settings import SECRET_KEY, ALGORITHM
 from .tools import get_user
-from typing import Callable, List, Optional
+from typing import Callable, Optional, Tuple
 from .err import PermissionError
+from Chau.configs import login_url
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=login_url+"/login")
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
@@ -51,7 +52,6 @@ async def get_any_user(token: Optional[str] = Depends(oauth2_scheme)) -> Optiona
     :param token:
     :return:
     """
-
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
@@ -106,19 +106,23 @@ def check_permission(permission_code: str) -> Callable:
             return user
         if await user.permissions.filter(code=permission_code):  # 这里需要测试一下
             return user
+        groups = await user.groups.all()
+        for group in groups:
+            if group.permissions.filter(code=permission_code):
+                return user
         raise PermissionError()
 
     return has_permission
 
 
-async def check_permissions(permission_codes: List[str]) -> Callable:
+def check_permissions(permission_codes: Tuple[str]) -> Callable:
     """
     确认是否有权限组
     :param permission_code:
     :return:
     """
 
-    async def has_permission(user: User = Depends(get_current_user)) -> User:
+    async def has_permissions(user: User = Depends(get_current_user)) -> User:
         """
         返回的依赖
         :param user:
@@ -126,9 +130,35 @@ async def check_permissions(permission_codes: List[str]) -> Callable:
         """
         if user.is_superuser:
             return user
-        permissions = await user.permissions.all()  # 这里需要测试一下
-        for permission in permissions:
-            if not permission_codes.count(permission.code):
-                raise PermissionError()
+        # permissions = await user.permissions.all()  # 这里需要测试一下
+        groups = await user.groups.all()
+        for group in groups:
+            permissions = await group.permissions.all()
+            for permission_code in permission_codes:
+                for permission in permissions:
+                    if permission.code == permission_code:
+                        break
+                else:
+                    permissions = await user.permissions.all()
+                    for permission in permissions:
+                        if permission.code == permission_code:
+                            break
+                    else:
+                        raise PermissionError()
+        return user
 
-    return has_permission
+    return has_permissions
+
+
+def get_permissions_user(permission_codes: Tuple[str] = ()):
+    """
+    获取user，并可以设置是否具有某些权限进行限制
+    :param permission_codes:
+    :return:
+    """
+    if permission_codes is None:
+        return get_any_user
+    elif not permission_codes:
+        return get_current_user
+    else:
+        return check_permissions(permission_codes)

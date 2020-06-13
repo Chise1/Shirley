@@ -14,7 +14,7 @@ from fastapi import FastAPI, Depends
 db_url = "sqlite://db.sqlite3"
 from Chau import register
 from Shirley.models import User
-from Shirley.depends import get_current_user
+from Shirley.depends import get_current_user, get_any_user
 
 app = FastAPI(debug=True, title="这是一个框架测试包")
 
@@ -47,9 +47,18 @@ class TestForm(Form, CreateModelMixin):
     pass
 
 
+from typing import Optional
+
+
 @app.get('/test')
 async def test():
     user_schema = User.get_schema()
+    return {"code": 200}
+
+
+@app.post('/test/permission1')  # 测试不强制需要登录
+async def test_permission(user: Optional[User] = Depends(get_any_user)):
+    print(user)
     return {"code": 200}
 
 
