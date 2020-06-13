@@ -28,7 +28,10 @@ setup(
         'python-multipart',
         'bcrypt',
         'python-dotenv',
-        'requests',
     ],  # 第三方库依赖
+    requires=[
+        'requests',
+        'pytest',
+    ],
     url="https://shirley.readthedocs.io/en/latest/"
 )
