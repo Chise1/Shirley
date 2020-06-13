@@ -7,3 +7,4 @@ python-multipart
 bcrypt
 pytest
 python-dotenv
+requests

@@ -70,6 +70,7 @@ async def super_user(user: User = Depends(get_current_user)) -> User:
         return user
 ```
 #### 配置
+
 系统启动需要进行一些配置，这些配置都在.env环境变量里面获取，所以每个项目的根目录必须有一个文件.env，在里面配置相关的环境变量内容，例如：
 大多数环境变量都有默认值，但是这个SECRET_KEY不能默认，在之后考虑脚本生成的时候会自动生成默认值。
 ```python

@@ -27,7 +27,8 @@ setup(
         'passlib[bcrypt]',
         'python-multipart',
         'bcrypt',
-        'python-dotenv'
+        'python-dotenv',
+        'requests',
     ],  # 第三方库依赖
     url="https://shirley.readthedocs.io/en/latest/"
 )
